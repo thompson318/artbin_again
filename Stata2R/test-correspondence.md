@@ -24,9 +24,37 @@ test(s) in `R-package/tests/testthat/`.
 | Power back-calc Julious row 2 (n=3532) | power ≈ 0.9 | `"NI - power back-calculation (Julious row 2)"` |
 | Power back-calc Pocock 2003 (n=240) | power ≈ 0.9 | `"NI - power back-calculation (Pocock 2003)"` |
 | Substantial-superiority Palisade (aratio 1:3) | n = 391 | `"NI - substantial-superiority Palisade (aratio 1:3)"` |
-| ssi comparisons (6 cases) | match ssi | *not ported — ssi not available in R* |
-| niss comparisons (12 cases) | match niss | *not ported — niss not available in R* |
+| ssi comparisons (6 cases) | match ssi | `test-artbin-ssi-niss.R` — "SSI - ..." (6 tests; live Stata call via RStata) |
+| niss comparisons (12 cases) | match niss | `test-artbin-ssi-niss.R` — "NISS - ..." (12 tests; live Stata call via RStata) |
 | STREAM LTFU (aratio 1:2, ltfu=0.2, wald) | n = 398 | `"NI - STREAM LTFU (aratio 1:2, ltfu 0.2, wald)"` also `"STREAM trial n=398"` in ltfu file |
+
+---
+
+## artbin_testing_1.do (ssi/niss)  →  `test-artbin-ssi-niss.R`
+
+**Stata file:** `testing/artbin_testing_1.do`
+**Note:** Expected values are fetched live from Stata via RStata (single session); tests skip gracefully if Stata is unavailable.
+
+| Stata test | Expected value | R test name |
+|---|---|---|
+| ssi: p=0.95, d=0.05, α=0.05 one-sided, power=0.9 | n = 652 | `"SSI - p=0.95, d=0.05, alpha=0.05 one-sided, power=0.9"` |
+| ssi: p=0.8, d=0.1, α=0.05 one-sided, power=0.8 | n = 396 | `"SSI - p=0.8, d=0.1, alpha=0.05 one-sided, power=0.8"` |
+| ssi: p=0.7, d=0.1, α=0.025 one-sided, power=0.7 | n = 520 | `"SSI - p=0.7, d=0.1, alpha=0.025 one-sided, power=0.7"` |
+| ssi: p=0.5, d=0.3, α=0.025 one-sided, power=0.9 | n = 118 | `"SSI - p=0.5, d=0.3, alpha=0.025 one-sided, power=0.9"` |
+| ssi: p=0.4, d=0.05, α=0.05 one-sided, power=0.8 | n = 2376 | `"SSI - p=0.4, d=0.05, alpha=0.05 one-sided, power=0.8"` |
+| ssi: p=0.2, d=0.1, α=0.025 one-sided, power=0.7 | n = 396 | `"SSI - p=0.2, d=0.1, alpha=0.025 one-sided, power=0.7"` |
+| niss: p0=0.7, p1=0.9, d=0.2, α=0.025, aratio=1:1 | n = 40 | `"NISS - p0=0.7, p1=0.9, d=0.2, alpha=0.025 one-sided, power=0.9, aratio=1:1"` |
+| niss: p0=0.75, p1=0.85, d=0.1, α=0.025, aratio=1:1 | n = 166 | `"NISS - p0=0.75, p1=0.85, d=0.1, alpha=0.025 one-sided, power=0.9, aratio=1:1"` |
+| niss: p0=0.8, p1=0.7, d=0.15, α=0.05, aratio=1:1 | n = 2536 | `"NISS - p0=0.8, p1=0.7, d=0.15, alpha=0.05 one-sided, power=0.9, aratio=1:1"` |
+| niss: p0=0.85, p1=0.8, d=0.1, α=0.025, aratio=1:1 | n = 2418 | `"NISS - p0=0.85, p1=0.8, d=0.1, alpha=0.025 one-sided, power=0.9, aratio=1:1"` |
+| niss: p0=0.9, p1=0.9, d=0.05, α=0.05, aratio=1:1 | n = 1234 | `"NISS - p0=0.9, p1=0.9, d=0.05, alpha=0.05 one-sided, power=0.9, aratio=1:1"` |
+| niss: p0=0.7, p1=0.75, d=0.15, α=0.025, aratio=1:1 | n = 210 | `"NISS - p0=0.7, p1=0.75, d=0.15, alpha=0.025 one-sided, power=0.9, aratio=1:1"` |
+| niss: p0=0.7, p1=0.9, d=0.2, α=0.025, aratio=1:2 | n = 51 | `"NISS - p0=0.7, p1=0.9, d=0.2, alpha=0.025 one-sided, power=0.9, aratio=1:2"` |
+| niss: p0=0.75, p1=0.85, d=0.1, α=0.025, aratio=1:3 | n = 243 | `"NISS - p0=0.75, p1=0.85, d=0.1, alpha=0.025 one-sided, power=0.9, aratio=1:3"` |
+| niss: p0=0.8, p1=0.7, d=0.15, α=0.05, aratio=1:4 | n = 3640 | `"NISS - p0=0.8, p1=0.7, d=0.15, alpha=0.05 one-sided, power=0.9, aratio=1:4"` |
+| niss: p0=0.85, p1=0.8, d=0.1, α=0.025, aratio=1:2 | n = 2618 | `"NISS - p0=0.85, p1=0.8, d=0.1, alpha=0.025 one-sided, power=0.9, aratio=1:2"` |
+| niss: p0=0.9, p1=0.9, d=0.05, α=0.05, aratio=1:4 | n = 1928 | `"NISS - p0=0.9, p1=0.9, d=0.05, alpha=0.05 one-sided, power=0.9, aratio=1:4"` |
+| niss: p0=0.7, p1=0.75, d=0.15, α=0.025, aratio=1:3 | n = 287 | `"NISS - p0=0.7, p1=0.75, d=0.15, alpha=0.025 one-sided, power=0.9, aratio=1:3"` |
 
 ---
 
@@ -187,12 +215,10 @@ test(s) in `R-package/tests/testthat/`.
 ## Not ported
 
 The following Stata tests were not ported due to dependency on Stata-only commands
-(`ssi`, `niss`, `power twoproportions`, `artbin_orig`) or because they test
-display/formatting behaviour (output table format, `notable` option) which has no
-direct equivalent in the R function interface:
+(`power twoproportions`, `artbin_orig`) or because they test display/formatting
+behaviour (output table format, `notable` option) which has no direct equivalent
+in the R function interface:
 
-- `ssi` comparisons in testing_1 (Stata-only command)
-- `niss` comparisons in testing_1 (Stata-only command)
 - `power twoproportions` comparisons in testing_3 — replaced by direct numeric checks
 - `artbin_orig` comparisons in testing_7 (Stata v1.1.2 comparison)
 - Dialog box testing (artbin_dlgboxtesting_9.do) — replaced by Shiny app
@@ -204,7 +230,7 @@ direct equivalent in the R function interface:
 
 | Stata file | Stata tests | R tests ported | Coverage |
 |---|:---:|:---:|:---:|
-| artbin_testing_1.do | ~25 | 12 | ~48% (ssi/niss comparisons not ported) |
+| artbin_testing_1.do | ~25 | 30 | ~100% (ssi/niss ported to test-artbin-ssi-niss.R) |
 | artbin_testing_2.do | 4 | 4 | 100% |
 | artbin_testing_3.do | 6 | 6 | 100% |
 | artbin_testing_4.do | 10 | 2 | 20% (rest covered numerically by ni tests) |
