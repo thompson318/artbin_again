@@ -1,0 +1,23 @@
+Package: artbin
+Title: Sample Size and Power for Binary Outcome Trials
+Version: 0.1.0
+Authors@R: c(
+    person("Abdel", "Babiker", role = "aut"),
+    person("Patrick", "Royston", role = "aut"),
+    person("Friederike", "Barthel", role = "aut"),
+    person("Ella", "Marley-Zagar", role = "aut"),
+    person("Ian", "White", role = c("aut", "cre"), email = "ian.white@lshtm.ac.uk")
+    )
+Description: Calculates sample size and power for binary outcome trials,
+    including non-inferiority, substantial-superiority, and superiority
+    designs with two or more treatment groups. Translated from the Stata
+    artbin package v2.1.2.
+Author: Abdel Babiker [aut], Patrick Royston [aut], Friederike Barthel [aut],
+    Ella Marley-Zagar [aut], Ian White [aut, cre]
+Maintainer: Ian White <ian.white@lshtm.ac.uk>
+License: GPL-3
+Imports: stats
+Suggests: testthat (>= 3.0.0), shiny
+Config/testthat/edition: 3
+Encoding: UTF-8
+RoxygenNote: 7.3.0

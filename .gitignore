@@ -1,0 +1,24 @@
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# R CMD check
+*.Rcheck/
+
+# devtools/roxygen
+man/*.Rd
+
+# renv
+renv/library/
+renv/python/
+renv/staging/
+renv/sandbox/
+.Rprofile
+
+# Built package
+*.tar.gz
+
+# macOS
+.DS_Store
