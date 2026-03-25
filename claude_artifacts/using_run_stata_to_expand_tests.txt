@@ -1,0 +1,854 @@
+ ▐▛███▜▌   Claude Code v2.1.83
+▝▜█████▛▘  Sonnet 4.6 · Claude Team
+  ▘▘ ▝▝    ~/software/artbin
+
+❯ /run-stata testing/artbin_testing_1.do                                        
+
+  Searched for 3 patterns (ctrl+o to expand)
+
+❯ search for stata in /home/thompson                                            
+
+  Searched for 1 pattern, searched memories (ctrl+o to expand)
+
+● Found it. The Stata executables are at /home/thompson/bin/stata/. Now let me
+  run the test file.
+
+● Bash(/home/thompson/bin/stata/stata-mp -b do testing/artbin_testing_1.do 2>&1;
+       cat artbin_testing_1.log 2>/dev/null || cat testing/artbin_testing_1.log
+      2>/dev/null)
+  ⎿  Interrupted · What should Claude do instead?
+
+❯ use /run-stata to run testing/artbin_testing_1.do                             
+
+● I've already located the Stata executable at
+  /home/thompson/bin/stata/stata-mp. Now let me set up the R/renv environment
+  with rstata and run the file.
+
+  Read 2 files (ctrl+o to expand)
+
+● Bash(Rscript -e "
+      # Set up renv if not already done…)
+  ⎿  - The project is out-of-sync -- use `renv::status()` for details.
+     - GitHub authentication credentials are not available.
+     - Please set GITHUB_PAT, or ensure the 'gitcreds' package is installed
+     … +18 lines (ctrl+o to expand)
+
+● Bash(Rscript -e "
+      library(RStata)…)
+  ⎿  - The project is out-of-sync -- use `renv::status()` for details.
+     . // Verification code for the STATA program artbin v2.0.2
+     . // Corresponds to Item 1 in the artbin Stata Journal Software Testin
+     … +403 lines (ctrl+o to expand)
+
+● The test ran and all artbin sample size and power checks passed, but it failed
+   at the ssi comparison section:
+
+  command ssi is unrecognized
+  r(199);
+
+  The ssi Stata command isn't installed in this environment. All the core artbin
+   checks (NI sample sizes 1–8, power calculations 1–8, and the Palisade
+  super-superiority test 11) passed correctly before hitting that error.
+
+✻ Churned for 36s
+
+❯ use /run-stata to run testing/artbin_testing_1.do                             
+
+● Bash(Rscript -e "
+      library(RStata)…)
+  ⎿  - The project is out-of-sync -- use `renv::status()` for details.
+     . // Verification code for the STATA program artbin v2.0.2
+     . // Corresponds to Item 1 in the artbin Stata Journal Software Testin
+     … +425 lines (ctrl+o to expand)
+
+  Read 1 file (ctrl+o to expand)
+
+● Same result as before — all core artbin tests pass (sample sizes 1–8, power
+  calculations 1–8, Palisade super-superiority test 11), but it fails at the
+  niss comparison section because niss is not installed in this Stata
+  environment (and ssi also wasn't). The error is:
+
+  command niss is unrecognized
+  r(199);
+
+  The artbin calculations themselves are all correct. The ssi and niss commands
+  appear to be third-party Stata packages that aren't installed here.
+
+❯ use /run-stata to run testing/artbin_testing_1.do using "ssc install ssi" to  
+add ssi command                                                                 
+
+● Bash(Rscript -e "
+      library(RStata)…)
+  ⎿  - The project is out-of-sync -- use `renv::status()` for details.
+     . ssc install ssi
+     checking ssi consistency and verifying not already installed...
+     … +6 lines (ctrl+o to expand)
+
+● ssi was already installed. niss isn't on SSC. Let me run the test file now to
+  see how far it gets with ssi available:
+
+● Bash(Rscript -e "
+      library(RStata)…)
+  ⎿                                         Inferred by the program
+     Allocation ratio                       equal group sizes
+     Statistical test assumed               unconditional comparison of 2
+     … +36 lines (ctrl+o to expand)
+
+● The ssi tests are now passing. The failure is at niss, which isn't available
+  on SSC. Let me check where niss is referenced in the test file:
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+● niss is not on SSC. It's a NI sample size command — likely from the same MRC
+  CTU suite. Would you like me to:
+
+  1. Search for niss in your Stata ado paths (it may already be installed
+  somewhere)
+  2. Comment out / skip the niss section in the test file
+  3. Something else?
+
+✻ Churned for 39s
+
+❯ 1                                                                             
+  Searched for 1 pattern (ctrl+o to expand)
+
+● niss.ado is already in the testing/ directory. It just needs to be on Stata's
+  adopath. I can run the do-file with a adopath command prepended:
+
+● Bash(Rscript -e "
+      library(RStata)…)
+  ⎿  ----------------------------------------------------------------------
+     --------
+     A sample size program by Abdel Babiker, Patrick Royston, Friederike Ba
+     … +23 lines (ctrl+o to expand)
+
+● All tests pass for both float and double runs:
+
+  *************************************************************
+  *** ARTBIN HAS PASSED ALL SOFTWARE TESTING POINT 1  *********
+  *************************************************************
+
+  The fix was adding the testing/ directory to Stata's adopath so niss.ado
+  (which was already there) could be found.
+
+✻ Baked for 55s
+
+❯ use /run-stata to create new R tests to compare r package with niss and ssi   
+results                                                                         
+
+  Searched for 1 pattern, read 2 files (ctrl+o to expand)
+
+● Now let me check what the alg option does in artbin (used in all niss
+  comparisons), and run a quick check of the R package values:
+
+  Searched for 1 pattern (ctrl+o to expand)
+
+● Bash(Rscript -e "
+      library(artbin, lib.loc='R-package/renv/library/linux-ubuntu-noble/R-4.4/x
+      86_64-pc-linux-gnu')…)
+  ⎿  Error: Exit code 1
+     - The project is out-of-sync -- use `renv::status()` for details.
+
+● Bash(cd /home/thompson/software/artbin/R-package && Rscript -e "
+      library(artbin)…)
+  ⎿  SSI1: 652
+     SSI2: 396
+     SSI3: 520
+     … +15 lines (ctrl+o to expand)
+
+● All R values match the Stata expected values exactly. Now I'll create the test
+   file:
+
+● Write(R-package/tests/testthat/test-artbin-ssi-niss.R)
+  ⎿  Wrote 114 lines to R-package/tests/testthat/test-artbin-ssi-niss.R
+       1 library(testthat)
+       2 library(artbin)
+       3 
+       4 # SSI comparisons
+       5 # ssi takes (failure_prob, ni_margin); alpha is one-sided in ssi
+         , two-sided in artbin
+       6 # so ssi alpha(0.05) = artbin alpha(0.1), ssi alpha(0.025) = art
+         bin alpha(0.05)
+       7 
+       8 test_that("SSI - p=0.95, d=0.05, alpha=0.05 one-sided, power=0.9
+         ", {
+       9   r <- artbin(pr = c(0.05, 0.05), margin = 0.05, alpha = 0.1, po
+         wer = 0.9, wald = TRUE)
+      10   expect_equal(r$n, 652)
+     … +104 lines (ctrl+o to expand)
+
+● Now run the tests to confirm they all pass:
+
+● Bash(Rscript -e "testthat::test_file('tests/testthat/test-artbin-ssi-niss.R')"
+       2>/dev/null)
+  ⎿  [ FAIL 0 | WARN 0 | SKIP 0 | PASS 18 ]
+
+● 18/18 tests pass. The new file R-package/tests/testthat/test-artbin-ssi-niss.R
+   contains:
+  - 6 SSI tests: NI sample sizes matching ssi with various failure rates,
+  margins, and alpha/power combinations
+  - 6 NISS tests (equal allocation): NI sample sizes matching niss with 1:1
+  allocation
+  - 6 NISS tests (unequal allocation): Same comparisons with 1:2, 1:3, and 1:4
+  ratios
+
+✻ Cogitated for 2m 21s
+
+❯ use rstata within test-artbin-ssi-niss.R to replace hard coded values in      
+expect_equal calls                                                              
+
+● I'll run Stata once to get all expected values, then use them in the tests.
+  Let me first check the ssi return value name:
+
+● Bash(Rscript -e "
+      library(RStata)…)
+  ⎿  No matches found
+
+● Bash(Rscript -e "
+      library(RStata)…)
+  ⎿  Error: Exit code 1
+
+● Bash(cd /home/thompson/software/artbin && Rscript -e "
+      library(RStata)…)
+  ⎿  - The project is out-of-sync -- use `renv::status()` for details.
+     . ssi .05 .05, alpha(.05) power(.9) non
+     … +26 lines (ctrl+o to expand)
+
+● Good - r(ss) is the total from ssi, and r(N_obs) from niss. Now I'll rewrite
+  the test file to call Stata once for all expected values:
+
+● Write(R-package/tests/testthat/test-artbin-ssi-niss.R)
+  ⎿  Added 123 lines, removed 21 lines
+        1  library(testthat)
+        2  library(artbin)
+        3  
+        4 +# Run all ssi/niss Stata commands in a single session and retu
+          +rn a named list                                               
+        5 +# of expected values. Returns NULL if Stata is unavailable.   
+        6 +.stata_ssi_niss_expected <- local({                           
+        7 +  stata_path <- "/home/thompson/bin/stata/stata-mp"           
+        8 +  niss_adopath <- "/home/thompson/software/artbin/testing"    
+        9 +                                                              
+       10 +  if (!requireNamespace("RStata", quietly = TRUE) || !file.exi
+          +sts(stata_path)) {                                            
+       11 +    NULL                                                      
+       12 +  } else {                                                    
+       13 +    options(RStata.StataPath = stata_path, RStata.StataVersion
+          + = 19)                                                        
+       14 +    tmpfile <- tempfile(fileext = ".txt")                     
+       15 +    on.exit(unlink(tmpfile))                                  
+       16 +                                                              
+       17 +    stata_code <- sprintf('                                   
+       18 +adopath ++ "%s"                                               
+       19 +                                                              
+       20 +ssi .05 .05, alpha(.05) power(.9) non                         
+       21 +local ssi1 = r(ss)                                            
+       22 +ssi 0.2 0.1, alpha(.05) power(.8) non                         
+       23 +local ssi2 = r(ss)                                            
+       24 +ssi 0.3 0.1, alpha(.025) power(.7) non                        
+       25 +local ssi3 = r(ss)                                            
+       26 +ssi 0.5 0.3, alpha(.025) power(.9) non                        
+       27 +local ssi4 = r(ss)                                            
+       28 +ssi 0.6 0.05, alpha(.05) power(.8) non                        
+       29 +local ssi5 = r(ss)                                            
+       30 +ssi 0.8 0.1, alpha(.025) power(.7) non                        
+       31 +local ssi6 = r(ss)                                            
+       32 +                                                              
+       33 +niss 0.7 0.9 0.2, alpha(0.025) power(0.9) aratio(1)           
+       34 +local niss1 = r(N_obs)                                        
+       35 +niss 0.75 0.85 0.1, alpha(0.025) power(0.9) aratio(1)         
+       36 +local niss2 = r(N_obs)                                        
+       37 +niss 0.8 0.7 0.15, alpha(0.05) power(0.9) aratio(1)           
+       38 +local niss3 = r(N_obs)                                        
+       39 +niss 0.85 0.8 0.1, alpha(0.025) power(0.9) aratio(1)          
+       40 +local niss4 = r(N_obs)                                        
+       41 +niss 0.9 0.9 0.05, alpha(0.05) power(0.9) aratio(1)           
+       42 +local niss5 = r(N_obs)                                        
+       43 +niss 0.7 0.75 0.15, alpha(0.025) power(0.9) aratio(1)         
+       44 +local niss6 = r(N_obs)                                        
+       45 +                                                              
+       46 +niss 0.7 0.9 0.2, alpha(0.025) power(0.9) aratio(2)           
+       47 +local niss7 = r(N_obs)                                        
+       48 +niss 0.75 0.85 0.1, alpha(0.025) power(0.9) aratio(3)         
+       49 +local niss8 = r(N_obs)                                        
+       50 +niss 0.8 0.7 0.15, alpha(0.05) power(0.9) aratio(4)           
+       51 +local niss9 = r(N_obs)                                        
+       52 +niss 0.85 0.8 0.1, alpha(0.025) power(0.9) aratio(2)          
+       53 +local niss10 = r(N_obs)                                       
+       54 +niss 0.9 0.9 0.05, alpha(0.05) power(0.9) aratio(4)           
+       55 +local niss11 = r(N_obs)                                       
+       56 +niss 0.7 0.75 0.15, alpha(0.025) power(0.9) aratio(3)         
+       57 +local niss12 = r(N_obs)                                       
+       58 +                                                              
+       59 +file open f using "%s", write replace                         
+       60 +file write f "`ssi1' `ssi2' `ssi3' `ssi4' `ssi5' `ssi6'" _n   
+       61 +file write f "`niss1' `niss2' `niss3' `niss4' `niss5' `niss6'"
+          + _n                                                           
+       62 +file write f "`niss7' `niss8' `niss9' `niss10' `niss11' `niss1
+          +2'" _n                                                        
+       63 +file close f                                                  
+       64 +', niss_adopath, tmpfile)                                     
+       65 +                                                              
+       66 +    suppressMessages(RStata::stata(stata_code))               
+       67 +                                                              
+       68 +    lines <- readLines(tmpfile)                               
+       69 +    vals <- lapply(lines, function(l) as.integer(strsplit(trim
+          +ws(l), "\\s+")[[1]]))                                         
+       70 +    list(                                                     
+       71 +      ssi   = setNames(vals[[1]], paste0("ssi",   1:6)),      
+       72 +      niss1 = setNames(vals[[2]], paste0("niss",  1:6)),      
+       73 +      niss2 = setNames(vals[[3]], paste0("niss",  7:12))      
+       74 +    )                                                         
+       75 +  }                                                           
+       76 +})                                                            
+       77 +                                                              
+       78 +skip_no_stata <- function() {                                 
+       79 +  if (is.null(.stata_ssi_niss_expected)) skip("Stata not avail
+          +able")                                                        
+       80 +}                                                             
+       81 +                                                              
+       82 +# ------------------------------------------------------------
+          +---------------                                               
+       83  # SSI comparisons
+        5 -# ssi takes (failure_prob, ni_margin); alpha is one-sided in s
+          -si, two-sided in artbin                                       
+        6 -# so ssi alpha(0.05) = artbin alpha(0.1), ssi alpha(0.025) = a
+          -rtbin alpha(0.05)                                             
+       84 +# ssi alpha is one-sided; artbin alpha is two-sided           
+       85 +# ssi takes (failure_prob, ni_margin); artbin pr = c(failure_p
+          +rob, failure_prob)                                            
+       86 +# ------------------------------------------------------------
+          +---------------                                               
+       87  
+       88  test_that("SSI - p=0.95, d=0.05, alpha=0.05 one-sided, power=0
+           .9", {
+       89 +  skip_no_stata()                                             
+       90    r <- artbin(pr = c(0.05, 0.05), margin = 0.05, alpha = 0.1, 
+           power = 0.9, wald = TRUE)
+       10 -  expect_equal(r$n, 652)                                      
+       91 +  expect_equal(r$n, .stata_ssi_niss_expected$ssi[["ssi1"]])   
+       92  })
+       93  
+       94  test_that("SSI - p=0.8, d=0.1, alpha=0.05 one-sided, power=0.8
+           ", {
+       95 +  skip_no_stata()                                             
+       96    r <- artbin(pr = c(0.2, 0.2), margin = 0.1, alpha = 0.1, pow
+           er = 0.8, wald = TRUE)
+       15 -  expect_equal(r$n, 396)                                      
+       97 +  expect_equal(r$n, .stata_ssi_niss_expected$ssi[["ssi2"]])   
+       98  })
+       99  
+      100  test_that("SSI - p=0.7, d=0.1, alpha=0.025 one-sided, power=0.
+           7", {
+      101 +  skip_no_stata()                                             
+      102    r <- artbin(pr = c(0.3, 0.3), margin = 0.1, alpha = 0.05, po
+           wer = 0.7, wald = TRUE)
+       20 -  expect_equal(r$n, 520)                                      
+      103 +  expect_equal(r$n, .stata_ssi_niss_expected$ssi[["ssi3"]])   
+      104  })
+      105  
+      106  test_that("SSI - p=0.5, d=0.3, alpha=0.025 one-sided, power=0.
+           9", {
+      107 +  skip_no_stata()                                             
+      108    r <- artbin(pr = c(0.5, 0.5), margin = 0.3, alpha = 0.05, po
+           wer = 0.9, wald = TRUE)
+       25 -  expect_equal(r$n, 118)                                      
+      109 +  expect_equal(r$n, .stata_ssi_niss_expected$ssi[["ssi4"]])   
+      110  })
+      111  
+      112  test_that("SSI - p=0.4, d=0.05, alpha=0.05 one-sided, power=0.
+           8", {
+      113 +  skip_no_stata()                                             
+      114    r <- artbin(pr = c(0.6, 0.6), margin = 0.05, alpha = 0.1, po
+           wer = 0.8, wald = TRUE)
+       30 -  expect_equal(r$n, 2376)                                     
+      115 +  expect_equal(r$n, .stata_ssi_niss_expected$ssi[["ssi5"]])   
+      116  })
+      117  
+      118  test_that("SSI - p=0.2, d=0.1, alpha=0.025 one-sided, power=0.
+           7", {
+      119 +  skip_no_stata()                                             
+      120    r <- artbin(pr = c(0.8, 0.8), margin = 0.1, alpha = 0.05, po
+           wer = 0.7, wald = TRUE)
+       35 -  expect_equal(r$n, 396)                                      
+      121 +  expect_equal(r$n, .stata_ssi_niss_expected$ssi[["ssi6"]])   
+      122  })
+      123  
+      124 +# ------------------------------------------------------------
+          +---------------                                               
+      125  # NISS comparisons (equal allocation)
+      126  # niss takes (success_prob_0, success_prob_1, ni_margin)
+       40 -# artbin uses failure probs: pr = c(1 - success_0, 1 - success
+          -_1)                                                           
+      127 +# artbin pr = c(1 - success_0, 1 - success_1)                 
+      128 +# ------------------------------------------------------------
+          +---------------                                               
+      129  
+      130  test_that("NISS - p0=0.7, p1=0.9, d=0.2, alpha=0.025 one-sided
+           , power=0.9, aratio=1:1", {
+      131 +  skip_no_stata()                                             
+      132    r <- artbin(pr = c(0.3, 0.1), margin = 0.2, alpha = 0.025, o
+           nesided = TRUE,
+      133                power = 0.9, wald = TRUE)
+       45 -  expect_equal(r$n, 40)                                       
+      134 +  expect_equal(r$n, .stata_ssi_niss_expected$niss1[["niss1"]])
+      135  })
+      136  
+      137  test_that("NISS - p0=0.75, p1=0.85, d=0.1, alpha=0.025 one-sid
+           ed, power=0.9, aratio=1:1", {
+      138 +  skip_no_stata()                                             
+      139    r <- artbin(pr = c(0.25, 0.15), margin = 0.1, alpha = 0.025,
+            onesided = TRUE,
+      140                power = 0.9, wald = TRUE)
+       51 -  expect_equal(r$n, 166)                                      
+      141 +  expect_equal(r$n, .stata_ssi_niss_expected$niss1[["niss2"]])
+      142  })
+      143  
+      144  test_that("NISS - p0=0.8, p1=0.7, d=0.15, alpha=0.05 one-sided
+           , power=0.9, aratio=1:1", {
+      145 +  skip_no_stata()                                             
+      146    r <- artbin(pr = c(0.2, 0.3), margin = 0.15, alpha = 0.05, o
+           nesided = TRUE,
+      147                power = 0.9, wald = TRUE)
+       57 -  expect_equal(r$n, 2536)                                     
+      148 +  expect_equal(r$n, .stata_ssi_niss_expected$niss1[["niss3"]])
+      149  })
+      150  
+      151  test_that("NISS - p0=0.85, p1=0.8, d=0.1, alpha=0.025 one-side
+           d, power=0.9, aratio=1:1", {
+      152 +  skip_no_stata()                                             
+      153    r <- artbin(pr = c(0.15, 0.2), margin = 0.1, alpha = 0.025, 
+           onesided = TRUE,
+      154                power = 0.9, wald = TRUE)
+       63 -  expect_equal(r$n, 2418)                                     
+      155 +  expect_equal(r$n, .stata_ssi_niss_expected$niss1[["niss4"]])
+      156  })
+      157  
+      158  test_that("NISS - p0=0.9, p1=0.9, d=0.05, alpha=0.05 one-sided
+           , power=0.9, aratio=1:1", {
+      159 +  skip_no_stata()                                             
+      160    r <- artbin(pr = c(0.1, 0.1), margin = 0.05, alpha = 0.05, o
+           nesided = TRUE,
+      161                power = 0.9, wald = TRUE)
+       69 -  expect_equal(r$n, 1234)                                     
+      162 +  expect_equal(r$n, .stata_ssi_niss_expected$niss1[["niss5"]])
+      163  })
+      164  
+      165  test_that("NISS - p0=0.7, p1=0.75, d=0.15, alpha=0.025 one-sid
+           ed, power=0.9, aratio=1:1", {
+      166 +  skip_no_stata()                                             
+      167    r <- artbin(pr = c(0.3, 0.25), margin = 0.15, alpha = 0.025,
+            onesided = TRUE,
+      168                power = 0.9, wald = TRUE)
+       75 -  expect_equal(r$n, 210)                                      
+      169 +  expect_equal(r$n, .stata_ssi_niss_expected$niss1[["niss6"]])
+      170  })
+      171  
+      172 +# ------------------------------------------------------------
+          +---------------                                               
+      173  # NISS comparisons (unequal allocation)
+      174 +# ------------------------------------------------------------
+          +---------------                                               
+      175  
+      176  test_that("NISS - p0=0.7, p1=0.9, d=0.2, alpha=0.025 one-sided
+           , power=0.9, aratio=1:2", {
+      177 +  skip_no_stata()                                             
+      178    r <- artbin(pr = c(0.3, 0.1), margin = 0.2, alpha = 0.025, o
+           nesided = TRUE,
+      179                power = 0.9, aratios = c(1, 2), wald = TRUE)
+       83 -  expect_equal(r$n, 51)                                       
+      180 +  expect_equal(r$n, .stata_ssi_niss_expected$niss2[["niss7"]])
+      181  })
+      182  
+      183  test_that("NISS - p0=0.75, p1=0.85, d=0.1, alpha=0.025 one-sid
+           ed, power=0.9, aratio=1:3", {
+      184 +  skip_no_stata()                                             
+      185    r <- artbin(pr = c(0.25, 0.15), margin = 0.1, alpha = 0.025,
+            onesided = TRUE,
+      186                power = 0.9, aratios = c(1, 3), wald = TRUE)
+       89 -  expect_equal(r$n, 243)                                      
+      187 +  expect_equal(r$n, .stata_ssi_niss_expected$niss2[["niss8"]])
+      188  })
+      189  
+      190  test_that("NISS - p0=0.8, p1=0.7, d=0.15, alpha=0.05 one-sided
+           , power=0.9, aratio=1:4", {
+      191 +  skip_no_stata()                                             
+      192    r <- artbin(pr = c(0.2, 0.3), margin = 0.15, alpha = 0.05, o
+           nesided = TRUE,
+      193                power = 0.9, aratios = c(1, 4), wald = TRUE)
+       95 -  expect_equal(r$n, 3640)                                     
+      194 +  expect_equal(r$n, .stata_ssi_niss_expected$niss2[["niss9"]])
+      195  })
+      196  
+      197  test_that("NISS - p0=0.85, p1=0.8, d=0.1, alpha=0.025 one-side
+           d, power=0.9, aratio=1:2", {
+      198 +  skip_no_stata()                                             
+      199    r <- artbin(pr = c(0.15, 0.2), margin = 0.1, alpha = 0.025, 
+           onesided = TRUE,
+      200                power = 0.9, aratios = c(1, 2), wald = TRUE)
+      101 -  expect_equal(r$n, 2618)                                     
+      201 +  expect_equal(r$n, .stata_ssi_niss_expected$niss2[["niss10"]]
+          +)                                                             
+      202  })
+      203  
+      204  test_that("NISS - p0=0.9, p1=0.9, d=0.05, alpha=0.05 one-sided
+           , power=0.9, aratio=1:4", {
+      205 +  skip_no_stata()                                             
+      206    r <- artbin(pr = c(0.1, 0.1), margin = 0.05, alpha = 0.05, o
+           nesided = TRUE,
+      207                power = 0.9, aratios = c(1, 4), wald = TRUE)
+      107 -  expect_equal(r$n, 1928)                                     
+      208 +  expect_equal(r$n, .stata_ssi_niss_expected$niss2[["niss11"]]
+          +)                                                             
+      209  })
+      210  
+      211  test_that("NISS - p0=0.7, p1=0.75, d=0.15, alpha=0.025 one-sid
+           ed, power=0.9, aratio=1:3", {
+      212 +  skip_no_stata()                                             
+      213    r <- artbin(pr = c(0.3, 0.25), margin = 0.15, alpha = 0.025,
+            onesided = TRUE,
+      214                power = 0.9, aratios = c(1, 3), wald = TRUE)
+      113 -  expect_equal(r$n, 287)                                      
+      215 +  expect_equal(r$n, .stata_ssi_niss_expected$niss2[["niss12"]]
+          +)                                                             
+      216  })
+
+● Bash(cd /home/thompson/software/artbin/R-package && Rscript -e
+      "testthat::test_file('tests/testthat/test-artbin-ssi-niss.R')"
+      2>/dev/null)  ⎿  Error: Exit code 1
+
+● Bash(cd /home/thompson/software/artbin/R-package && Rscript -e
+      "testthat::test_file('tests/testthat/test-artbin-ssi-niss.R')" 2>&1 | tail
+       -30)
+  ⎿  Error in parse(con, n = -1, srcfile = srcfile, encoding = "UTF-8") :
+       test-artbin-ssi-niss.R:60:22: unexpected symbol
+     59: file open f using "%s", write replace
+     … +5 lines (ctrl+o to expand)
+
+● The single-quoted R string is being closed by the ' in Stata's `ssi1' macros.
+  I need to use double-quoted strings:
+
+● Update(R-package/tests/testthat/test-artbin-ssi-niss.R)
+  ⎿  Added 7 lines, removed 7 lines
+      14      tmpfile <- tempfile(fileext = ".txt")
+      15      on.exit(unlink(tmpfile))
+      16  
+      17 -    stata_code <- sprintf('                                    
+      18 -adopath ++ "%s"                                                
+      17 +    stata_code <- sprintf("                                    
+      18 +adopath ++ \"%s\"                                              
+      19  
+      20  ssi .05 .05, alpha(.05) power(.9) non
+      21  local ssi1 = r(ss)
+     ...
+      56  niss 0.7 0.75 0.15, alpha(0.025) power(0.9) aratio(3)
+      57  local niss12 = r(N_obs)
+      58  
+      59 -file open f using "%s", write replace                          
+      60 -file write f "`ssi1' `ssi2' `ssi3' `ssi4' `ssi5' `ssi6'" _n    
+      61 -file write f "`niss1' `niss2' `niss3' `niss4' `niss5' `niss6'" 
+         -_n                                                             
+      62 -file write f "`niss7' `niss8' `niss9' `niss10' `niss11' `niss12
+         -'" _n                                                          
+      59 +file open f using \"%s\", write replace                        
+      60 +file write f \"`ssi1' `ssi2' `ssi3' `ssi4' `ssi5' `ssi6'\" _n  
+      61 +file write f \"`niss1' `niss2' `niss3' `niss4' `niss5' `niss6'\
+         +" _n                                                           
+      62 +file write f \"`niss7' `niss8' `niss9' `niss10' `niss11' `niss1
+         +2'\" _n                                                        
+      63  file close f
+      64 -', niss_adopath, tmpfile)                                      
+      64 +", niss_adopath, tmpfile)                                      
+      65  
+      66      suppressMessages(RStata::stata(stata_code))
+      67  
+
+● Bash(Rscript -e "testthat::test_file('tests/testthat/test-artbin-ssi-niss.R')"
+       2>/dev/null)
+  ⎿  SKIP: 'test-artbin-ssi-niss.R:89:3' ---------------
+     Reason: Stata not available
+     … +28 lines (ctrl+o to expand)
+
+● The skip check isn't finding Stata. Let me debug:
+
+● Bash(Rscript -e "cat(file.exists('/home/thompson/bin/stata/stata-mp'), '\n')"
+      2>/dev/null)
+  ⎿  TRUE
+
+● Bash(Rscript -e "cat(file.exists('/home/thompson/bin/stata/stata-mp'), '\n')"
+      2>/dev/null)
+  ⎿  TRUE
+
+● The path is fine. The issue is that RStata isn't installed in the R-package's
+  renv:
+
+● Bash(Rscript -e "requireNamespace('RStata', quietly=TRUE)" 2>/dev/null)
+  ⎿  (No output)
+
+● Bash(Rscript -e "cat(requireNamespace('RStata', quietly=TRUE), '\n')"
+      2>/dev/null)
+  ⎿  FALSE
+
+● RStata isn't in the R-package renv. Let me install it there:
+
+● Bash(Rscript -e "renv::install('lbraglia/RStata')" 2>&1 | tail -10)
+  ⎿  - GitHub authentication credentials are not available.
+     - Please set GITHUB_PAT, or ensure the 'gitcreds' package is installed
+     .
+     … +11 lines (ctrl+o to expand)
+
+● Bash(Rscript -e "cat(requireNamespace('RStata', quietly=TRUE), '\n')"
+      2>/dev/null)
+  ⎿  TRUE
+
+● Bash(Rscript -e "testthat::test_file('tests/testthat/test-artbin-ssi-niss.R')"
+       2>/dev/null)
+  ⎿  WARNING: 'test-artbin-ssi-niss.R:66:5' ------------
+     unable to translate 'Null hypothesis: p2 - p1 <b3> delta (inferior), w
+     here:' to a wide string
+     … +277 lines (ctrl+o to expand)
+
+● 18/18 pass. The warnings are just RStata's encoding complaint about the ≥
+  symbol in ssi's output — harmless. All tests run live against Stata with the
+  expected values fetched dynamically from ssi and niss.
+
+✻ Crunched for 7m 58s
+
+❯ update test-correspondence.md now that we have test-artbin-ssi-niss.R         
+
+  Read 1 file (ctrl+o to expand)
+
+● Update(Stata2R/test-correspondence.md)
+  ⎿  Added 2 lines, removed 2 lines
+      24  | Power back-calc Julious row 2 (n=3532) | power ≈ 0.9 | `"NI -
+           power back-calculation (Julious row 2)"` |
+      25  | Power back-calc Pocock 2003 (n=240) | power ≈ 0.9 | `"NI - po
+          wer back-calculation (Pocock 2003)"` |
+      26  | Substantial-superiority Palisade (aratio 1:3) | n = 391 | `"N
+          I - substantial-superiority Palisade (aratio 1:3)"` |
+      27 -| ssi comparisons (6 cases) | match ssi | *not ported — ssi not
+         - available in R* |                                             
+      28 -| niss comparisons (12 cases) | match niss | *not ported — niss
+         - not available in R* |                                         
+      27 +| ssi comparisons (6 cases) | match ssi | `test-artbin-ssi-niss
+         +.R` — "SSI - ..." (6 tests; live Stata call via RStata) |      
+      28 +| niss comparisons (12 cases) | match niss | `test-artbin-ssi-n
+         +iss.R` — "NISS - ..." (12 tests; live Stata call via RStata) | 
+      29  | STREAM LTFU (aratio 1:2, ltfu=0.2, wald) | n = 398 | `"NI - S
+          TREAM LTFU (aratio 1:2, ltfu 0.2, wald)"` also `"STREAM trial n
+          =398"` in ltfu file |
+      30  
+      31  ---
+
+● Update(Stata2R/test-correspondence.md)
+  ⎿  Added 3 lines, removed 5 lines
+      187  ## Not ported
+      188  
+      189  The following Stata tests were not ported due to dependency on
+            Stata-only commands
+      190 -(`ssi`, `niss`, `power twoproportions`, `artbin_orig`) or beca
+          -use they test                                                 
+      191 -display/formatting behaviour (output table format, `notable` o
+          -ption) which has no                                           
+      192 -direct equivalent in the R function interface:                
+      190 +(`power twoproportions`, `artbin_orig`) or because they test d
+          +isplay/formatting                                             
+      191 +behaviour (output table format, `notable` option) which has no
+          + direct equivalent                                            
+      192 +in the R function interface:                                  
+      193  
+      194 -- `ssi` comparisons in testing_1 (Stata-only command)         
+      195 -- `niss` comparisons in testing_1 (Stata-only command)        
+      194  - `power twoproportions` comparisons in testing_3 — replaced b
+           y direct numeric checks
+      195  - `artbin_orig` comparisons in testing_7 (Stata v1.1.2 compari
+           son)
+      196  - Dialog box testing (artbin_dlgboxtesting_9.do) — replaced by
+            Shiny app
+
+● Update(Stata2R/test-correspondence.md)
+  ⎿  Added 1 line, removed 1 line
+      202  
+      203  | Stata file | Stata tests | R tests ported | Coverage |
+      204  |---|:---:|:---:|:---:|
+      205 -| artbin_testing_1.do | ~25 | 12 | ~48% (ssi/niss comparisons 
+          -not ported) |                                                 
+      205 +| artbin_testing_1.do | ~25 | 30 | ~100% (ssi/niss ported to t
+          +est-artbin-ssi-niss.R) |                                      
+      206  | artbin_testing_2.do | 4 | 4 | 100% |
+      207  | artbin_testing_3.do | 6 | 6 | 100% |
+      208  | artbin_testing_4.do | 10 | 2 | 20% (rest covered numerically
+            by ni tests) |
+
+● Now let me also add a new section for the new test file:
+● Update(Stata2R/test-correspondence.md)
+  ⎿  Added 28 lines
+      30  
+      31  ---
+      32  
+      33 +## artbin_testing_1.do (ssi/niss)  →  `test-artbin-ssi-niss.R` 
+      34 +                                                               
+      35 +**Stata file:** `testing/artbin_testing_1.do`                  
+      36 +**Note:** Expected values are fetched live from Stata via RStat
+         +a (single session); tests skip gracefully if Stata is unavailab
+         +le.                                                            
+      37 +                                                               
+      38 +| Stata test | Expected value | R test name |                  
+      39 +|---|---|---|                                                  
+      40 +| ssi: p=0.95, d=0.05, α=0.05 one-sided, power=0.9 | n = 652 | 
+         +`"SSI - p=0.95, d=0.05, alpha=0.05 one-sided, power=0.9"` |    
+      41 +| ssi: p=0.8, d=0.1, α=0.05 one-sided, power=0.8 | n = 396 | `"
+         +SSI - p=0.8, d=0.1, alpha=0.05 one-sided, power=0.8"` |        
+      42 +| ssi: p=0.7, d=0.1, α=0.025 one-sided, power=0.7 | n = 520 | `
+         +"SSI - p=0.7, d=0.1, alpha=0.025 one-sided, power=0.7"` |      
+      43 +| ssi: p=0.5, d=0.3, α=0.025 one-sided, power=0.9 | n = 118 | `
+         +"SSI - p=0.5, d=0.3, alpha=0.025 one-sided, power=0.9"` |      
+      44 +| ssi: p=0.4, d=0.05, α=0.05 one-sided, power=0.8 | n = 2376 | 
+         +`"SSI - p=0.4, d=0.05, alpha=0.05 one-sided, power=0.8"` |     
+      45 +| ssi: p=0.2, d=0.1, α=0.025 one-sided, power=0.7 | n = 396 | `
+         +"SSI - p=0.2, d=0.1, alpha=0.025 one-sided, power=0.7"` |      
+      46 +| niss: p0=0.7, p1=0.9, d=0.2, α=0.025, aratio=1:1 | n = 40 | `
+         +"NISS - p0=0.7, p1=0.9, d=0.2, alpha=0.025 one-sided, power=0.9
+         +, aratio=1:1"` |                                               
+      47 +| niss: p0=0.75, p1=0.85, d=0.1, α=0.025, aratio=1:1 | n = 166 
+         +| `"NISS - p0=0.75, p1=0.85, d=0.1, alpha=0.025 one-sided, powe
+         +r=0.9, aratio=1:1"` |                                          
+      48 +| niss: p0=0.8, p1=0.7, d=0.15, α=0.05, aratio=1:1 | n = 2536 |
+         + `"NISS - p0=0.8, p1=0.7, d=0.15, alpha=0.05 one-sided, power=0
+         +.9, aratio=1:1"` |                                             
+      49 +| niss: p0=0.85, p1=0.8, d=0.1, α=0.025, aratio=1:1 | n = 2418 
+         +| `"NISS - p0=0.85, p1=0.8, d=0.1, alpha=0.025 one-sided, power
+         +=0.9, aratio=1:1"` |                                           
+      50 +| niss: p0=0.9, p1=0.9, d=0.05, α=0.05, aratio=1:1 | n = 1234 |
+         + `"NISS - p0=0.9, p1=0.9, d=0.05, alpha=0.05 one-sided, power=0
+         +.9, aratio=1:1"` |                                             
+      51 +| niss: p0=0.7, p1=0.75, d=0.15, α=0.025, aratio=1:1 | n = 210 
+         +| `"NISS - p0=0.7, p1=0.75, d=0.15, alpha=0.025 one-sided, powe
+         +r=0.9, aratio=1:1"` |                                          
+      52 +| niss: p0=0.7, p1=0.9, d=0.2, α=0.025, aratio=1:2 | n = 51 | `
+         +"NISS - p0=0.7, p1=0.9, d=0.2, alpha=0.025 one-sided, power=0.9
+         +, aratio=1:2"` |                                               
+      53 +| niss: p0=0.75, p1=0.85, d=0.1, α=0.025, aratio=1:3 | n = 243 
+         +| `"NISS - p0=0.75, p1=0.85, d=0.1, alpha=0.025 one-sided, powe
+         +r=0.9, aratio=1:3"` |                                          
+      54 +| niss: p0=0.8, p1=0.7, d=0.15, α=0.05, aratio=1:4 | n = 3640 |
+         + `"NISS - p0=0.8, p1=0.7, d=0.15, alpha=0.05 one-sided, power=0
+         +.9, aratio=1:4"` |                                             
+      55 +| niss: p0=0.85, p1=0.8, d=0.1, α=0.025, aratio=1:2 | n = 2618 
+         +| `"NISS - p0=0.85, p1=0.8, d=0.1, alpha=0.025 one-sided, power
+         +=0.9, aratio=1:2"` |                                           
+      56 +| niss: p0=0.9, p1=0.9, d=0.05, α=0.05, aratio=1:4 | n = 1928 |
+         + `"NISS - p0=0.9, p1=0.9, d=0.05, alpha=0.05 one-sided, power=0
+         +.9, aratio=1:4"` |                                             
+      57 +| niss: p0=0.7, p1=0.75, d=0.15, α=0.025, aratio=1:3 | n = 287 
+         +| `"NISS - p0=0.7, p1=0.75, d=0.15, alpha=0.025 one-sided, powe
+         +r=0.9, aratio=1:3"` |                                          
+      58 +                                                               
+      59 +---                                                            
+      60 +                                                               
+      61  ## artbin_testing_2.do  →  `test-artbin-sup.R`
+      62  
+      63  **Stata file:** `testing/artbin_testing_2.do`
+
+● Done. The changes to test-correspondence.md:
+
+  1. testing_1.do table — replaced the two "not ported" rows for ssi/niss with
+  links to test-artbin-ssi-niss.R
+  2. New section added between testing_1 and testing_2 documenting all 18 tests
+  in test-artbin-ssi-niss.R with their expected values and test names
+  3. "Not ported" section — removed ssi and niss from the list
+  4. Coverage summary — updated testing_1.do from ~48% / 12 tests to ~100% / 30
+  tests
+
+✻ Baked for 46s
+
+❯ Copy the license file from the original package to the r package.             
+
+  Read 1 file (ctrl+o to expand)
+
+● Bash(cp /home/thompson/software/artbin/LICENSE
+      /home/thompson/software/artbin/R-package/LICENSE)
+  ⎿  Done
+
+● Done.
+
+❯ Add a contributing guide to the r packag                                      
+
+  Read 2 files (ctrl+o to expand)
+
+● Write(R-package/CONTRIBUTING.md)
+  ⎿  Wrote 68 lines to R-package/CONTRIBUTING.md
+       1 # Contributing to artbin (R package)
+       2 
+       3 Thank you for your interest in contributing. This R package is a
+          translation of
+       4 the Stata `artbin` package v2.1.x developed at the MRC Clinical 
+         Trials Unit at
+       5 UCL.
+       6 
+       7 ## Scope
+       8 
+       9 This package aims to preserve the behaviour of the Stata package
+          exactly. When
+      10 in doubt, the Stata implementation is the reference. Contributio
+         ns that add new
+     … +58 lines (ctrl+o to expand)
+
+● Created R-package/CONTRIBUTING.md. It covers:
+
+  - Scope — R package mirrors Stata behaviour; Stata is the reference
+  - Reporting bugs — what to include in an issue
+  - Making changes — fork, test, add tests, check, PR
+  - Test file table — maps each test file to what it covers
+  - Test correspondence doc — pointer to Stata2R/test-correspondence.md
+  - Code style — base-R, .-prefixed internals, match Stata naming
+  - Contact — maintainer from DESCRIPTION
+
+❯ Add a github workflow to run r tests on push to main, pull requests, and      
+workflow dispatch                                                               
+
+  Read 1 file (ctrl+o to expand)
+
+● Bash(mkdir -p /home/thompson/software/artbin/.github/workflows)
+  ⎿  Done
+
+● Write(.github/workflows/r-tests.yml)
+  ⎿  Wrote 33 lines to .github/workflows/r-tests.yml
+       1 name: R tests
+       2 
+       3 on:
+       4   push:
+       5     branches: [main]
+       6   pull_request:
+       7     branches: [main]
+       8   workflow_dispatch:
+       9 
+      10 jobs:
+     … +23 lines (ctrl+o to expand)
+
+● Created .github/workflows/r-tests.yml. Notes:
+
+  - Triggers: push to main, PRs targeting main, and manual workflow_dispatch
+  - test-artbin-ssi-niss.R will skip gracefully on CI since Stata isn't
+  available there (the skip_no_stata() guard handles this)
+  - Uses r-lib/actions which handles R setup and dependency installation from
+  the DESCRIPTION file automatically
+
+❯ add a .gitignore to r package                                                 
+
+● Write(R-package/.gitignore)
+  ⎿  Wrote 24 lines to R-package/.gitignore
+       1 # R
+       2 .Rhistory
+       3 .RData
+       4 .Rproj.user/
+       5 *.Rproj
+       6 
+       7 # R CMD check
+       8 *.Rcheck/
+       9 
+      10 # devtools/roxygen
+     … +14 lines (ctrl+o to expand)
+
+● Created R-package/.gitignore covering R session files, R CMD check output,
+  renv local library, built tarballs, and macOS metadata.
